@@ -1,26 +1,37 @@
+
+import { Handler } from 'aws-lambda'
+import axios from 'axios'
+
 import renderSsrApp from './renderSsrApp';
 
-const handler = async function(event: any) {
+export const handler: Handler = async (event) => {
   console.log('react server handle event', JSON.stringify(event, null, 2));
 
-  const app = renderSsrApp();
 
-  const body = `
-<!DOCTYPE html>
-<html>
-  <body>
-    <div id="root">${app}</div>
-  </body>
-</html>
-  `
+  if (event.path.match(/(static|manifest.json|favicon.ico)/)) {
+    const staticPath = event.path.replace(/^.*prod\//, '/')
+    console.log(`fetch static path '${staticPath}' from ${process.env.STATIC_WEBSITE}`)
+    const staticResponse = await axios.get(`http://${process.env.STATIC_WEBSITE}${staticPath}`)
+    return {
+      statusCode: 200,
+      body: staticResponse.data,
+    }
+  }
+  const staticPath = event.path.replace(/^.*prod\//, '/')
+  console.log(`fetch static path '${staticPath}' from ${process.env.STATIC_WEBSITE}`)
+  const staticResponse = await axios.get(`http://${process.env.STATIC_WEBSITE}${staticPath}`)
+
+  const app = await renderSsrApp();
+
+  const body = staticResponse.data.replace('<div id="root"></div>', `<div id="root">${app}</div>`)
+    .replace(/\/static\//g, '/prod/static/')
+    .replace(/\/manifest.json/, '/prod/manifest.json')
+    .replace(/\/favicon.ico/, '/prod/favicon.ico')
 
   return {
     statusCode: 200,
-    headers: { "Content-Type": "text/html" },
+    headers: { "Content-Type": "text/html", apiEndpoint: process.env.API_ENDPOINT },
     body,
   }
 }
 
-export {
-  handler
-}
