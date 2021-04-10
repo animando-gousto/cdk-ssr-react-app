@@ -1,0 +1,23 @@
+{
+  "name": "ssr-react-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build-react-client && npm run build-react-server && npm run build-lambda",
+    "build-react-client": "npm run --prefix react-app build",
+    "build-react-server": "npm run --prefix react-app build-server",
+    "build-lambda": "tsc -p lambda"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/animando-gousto/cdk-ssr-react-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/animando-gousto/cdk-ssr-react-app/issues"
+  },
+  "homepage": "https://github.com/animando-gousto/cdk-ssr-react-app#readme"
+}

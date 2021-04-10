@@ -6,7 +6,6 @@ export class AppStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-
     const reactAppBucketName = new cdk.CfnParameter(this, "reactAppBucketName", {
       type: "String",
       description: "The name of S3 bucket to upload react application"
@@ -14,8 +13,8 @@ export class AppStack extends cdk.Stack {
     const api = new Api(this, 'Api');
     new ReactApp(this, 'ReactApp', {
       apiUrl: api.endpointUrl,
+      reactAppName: props && props.stackName || 'default',
       bucketName: reactAppBucketName.valueAsString,
     });
-
   }
 }
