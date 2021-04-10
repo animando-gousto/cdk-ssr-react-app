@@ -1,8 +1,8 @@
 {
-  "AppStack": {
-    "ReactAppBucketWebsite4AA30AC2": "animandogousto-ssr-react-app.s3-website-eu-west-1.amazonaws.com",
-    "ApiEndpoint1541504C": "https://asejfs1i34.execute-api.eu-west-1.amazonaws.com/prod/",
-    "ReactAppHomeEndpoint488580B4": "https://w68bbwgqr0.execute-api.eu-west-1.amazonaws.com/prod/",
-    "ReactAppBucketDEF59098": "animandogousto-ssr-react-app"
+  "local": {
+    "ReactAppBucketWebsite4AA30AC2": "animandogousto-react-app-local.s3-website-eu-west-1.amazonaws.com",
+    "ApiEndpoint1541504C": "https://0a8dktzwhc.execute-api.eu-west-1.amazonaws.com/prod/",
+    "ReactAppHomeEndpoint488580B4": "https://f8w3efrx4c.execute-api.eu-west-1.amazonaws.com/prod/",
+    "ReactAppBucketDEF59098": "animandogousto-react-app-local"
   }
 }

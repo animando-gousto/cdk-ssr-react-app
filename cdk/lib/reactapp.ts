@@ -6,8 +6,8 @@ import * as s3deploy from "@aws-cdk/aws-s3-deployment";
 import * as apigw from '@aws-cdk/aws-apigateway'
 export interface ReactAppProps {
   apiUrl: string,
-  bucketName: string,
   reactAppName: string,
+  bucketPrefix: string,
 }
 
 export class ReactApp extends cdk.Construct {
@@ -16,7 +16,7 @@ export class ReactApp extends cdk.Construct {
     super(scope, id)
 
     const reactAppBucket = new s3.Bucket(this, "ssr-site", {
-      bucketName: `${props.bucketName}-${props.reactAppName}`,
+      bucketName: `${props.bucketPrefix}-react-app-${props.reactAppName}`,
       websiteIndexDocument: "index.html",
       websiteErrorDocument: "error.html",
       publicReadAccess: true,

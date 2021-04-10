@@ -4,10 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build-react-client && npm run build-react-server && npm run build-lambda",
-    "build-react-client": "npm run --prefix react-app build",
-    "build-react-server": "npm run --prefix react-app build-server",
-    "build-lambda": "tsc -p lambda"
+    "build": "npm run build:react-client && npm run build:react-server && npm run build:lambda && npm run build:cdk",
+    "build:react-client": "npm run --prefix react-app build",
+    "build:react-server": "npm run --prefix react-app build:server",
+    "build:lambda": "tsc -p lambda",
+    "build:cdk": "npm run --prefix cdk build",
+    "deploy": "npm run --prefix cdk deploy"
   },
   "repository": {
     "type": "git",
