@@ -15,7 +15,7 @@ const configureStore = (/*preloadedState*/) => {
 
   const store = createStore(rootReducer/*, preloadedState, composedEnhancers*/)
 
-  store.dispatch(loadedUsers({'1': {id: '1', firstName: 'Graham'}}))
+  store.dispatch(loadedUsers({'1': {id: '1', firstName: 'Graham', surname: 'King'}}))
 
   return store
 }

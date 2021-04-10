@@ -6,8 +6,6 @@ import App from '../src/SsrApp'
 import configureStore from './configureStore';
 
 const renderSsrApp = async (page: string) => {
-  // const apiResponse = await axios.get(process.env.API_ENDPOINT || '')
-  // console.log('got apiResponse', apiResponse);
   const store = configureStore();
 
   const app = renderToString(
