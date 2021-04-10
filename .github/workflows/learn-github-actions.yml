@@ -48,6 +48,8 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: react-client-build
+      - run: pwd
+      - run: ls
       - run: mv lambda-build lambda/build
       - run: mv react-server-build react-app/server-build
       - run: mv react-client-build react-app/build
