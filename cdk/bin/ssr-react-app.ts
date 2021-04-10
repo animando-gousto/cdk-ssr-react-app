@@ -4,7 +4,8 @@ import { AppStack } from '../lib/app-stack';
 
 const app = new cdk.App();
 
-const stackName = process.env.STACK_NAME || 'default'
-new AppStack(app, `AppStack-${stackName}`, {
-  stackName,
+const suffix = process.env.SUFFIX || 'default'
+new AppStack(app, `SsrReactAppStack-${suffix}`, {
+  stackName: `SsrReactAppStack-${suffix}`,
+  suffix,
 });

@@ -2,10 +2,13 @@ import * as cdk from '@aws-cdk/core';
 import { ReactApp } from './reactapp'
 import { Api } from './api'
 
-export class AppStack extends cdk.Stack {
-  constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
-    super(scope, id, props);
+interface StackProps extends cdk.StackProps {
+  suffix: string,
+}
 
+export class AppStack extends cdk.Stack {
+  constructor(scope: cdk.App, id: string, props: StackProps) {
+    super(scope, id, props);
 
     const bucketPrefix = new cdk.CfnParameter(this, 'bucketPrefix', {
       type: 'String',
@@ -16,7 +19,7 @@ export class AppStack extends cdk.Stack {
 
     new ReactApp(this, 'ReactApp', {
       apiUrl: api.endpointUrl,
-      reactAppName: props && props.stackName || 'default',
+      reactAppName: props.suffix,
       bucketPrefix: bucketPrefix.valueAsString,
     });
   }
