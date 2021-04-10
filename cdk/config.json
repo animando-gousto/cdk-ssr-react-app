@@ -1,8 +1,0 @@
-{
-  "lerna": {
-    "ReactAppBucketWebsite4AA30AC2": "animandogousto-react-app-lerna.s3-website-eu-west-1.amazonaws.com",
-    "ApiEndpoint1541504C": "https://yxff0863wa.execute-api.eu-west-1.amazonaws.com/prod/",
-    "ReactAppHomeEndpoint488580B4": "https://jinsle0342.execute-api.eu-west-1.amazonaws.com/prod/",
-    "ReactAppBucketDEF59098": "animandogousto-react-app-lerna"
-  }
-}
