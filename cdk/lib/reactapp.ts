@@ -19,8 +19,9 @@ export class ReactApp extends cdk.Construct {
       websiteIndexDocument: "index.html",
       websiteErrorDocument: "error.html",
       publicReadAccess: true,
-      //only for demo not to use in production
+      // only for demo not to use in production
       removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
       accessControl: s3.BucketAccessControl.PUBLIC_READ,
     });
     new cdk.CfnOutput(this, "Bucket", { value: reactAppBucket.bucketName });
