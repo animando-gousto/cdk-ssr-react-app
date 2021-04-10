@@ -36,6 +36,8 @@ jobs:
         uses: actions/setup-node@v2.1.5
         with:
           node-version: 10.12.0
+      - run: npm install
+      - run: npm run bootstrap
       - name: Download lambda build
         uses: actions/download-artifact@v2
         with:
@@ -51,12 +53,6 @@ jobs:
         with:
           name: react-client-build
           path: react-app/build
-      - run: pwd
-      - run: ls react-app
-      - run: ls react-app/build
-      - run: ls react-app/server-build
-      - run: ls lambda
-      - run: ls lambda/build
       - name: Deploy
         run: npm run deploy
         env:
