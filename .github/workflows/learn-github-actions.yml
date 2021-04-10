@@ -40,19 +40,23 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: lambda-build
+          path: lambda/build
       - name: Download react server build
         uses: actions/download-artifact@v2
         with:
           name: react-server-build
+          path: react-app/server-build
       - name: Download react client build
         uses: actions/download-artifact@v2
         with:
           name: react-client-build
+          path: react-app/build
       - run: pwd
-      - run: ls
-      - run: mv lambda-build lambda/build
-      - run: mv react-server-build react-app/server-build
-      - run: mv react-client-build react-app/build
+      - run: ls react-app
+      - run: ls react-app/build
+      - run: ls react-app/server-build
+      - run: ls lambda
+      - run: ls lambda/build
       - name: Deploy
         run: npm run deploy
         env:
