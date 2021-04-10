@@ -1,16 +1,17 @@
 import * as React from 'react'
-import { useSelector } from 'react-redux'
-import { getUsers, usersAreLoaded } from '../../store/users';
+import { useDispatch, useSelector } from 'react-redux'
+import { getUsers, usersAreLoaded, loadUsers } from '../../store/users';
 
 const Users = () => {
   const users = useSelector(getUsers);
   const usersLoaded = useSelector(usersAreLoaded);
-  console.log({users})
+  const dispatch = useDispatch();
   React.useEffect(() => {
     if (!usersLoaded) {
-      console.log('load users');
+      dispatch(loadUsers())
     }
-  }, [usersLoaded])
+  }, [dispatch, usersLoaded])
+
   return (
     <div>
       <h4>Users</h4>
