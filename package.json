@@ -4,12 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build:react-client && npm run build:react-server && npm run build:lambda && npm run build:cdk",
-    "build:react-client": "npm run --prefix react-app build",
-    "build:react-server": "npm run --prefix react-app build:server",
-    "build:lambda": "tsc -p lambda",
-    "build:cdk": "npm run --prefix cdk build",
-    "deploy": "npm run --prefix cdk deploy"
+    "build": "lerna run build --stream",
+    "deploy": "lerna run deploy -- stream"
   },
   "repository": {
     "type": "git",
@@ -21,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/animando-gousto/cdk-ssr-react-app/issues"
   },
-  "homepage": "https://github.com/animando-gousto/cdk-ssr-react-app#readme"
+  "homepage": "https://github.com/animando-gousto/cdk-ssr-react-app#readme",
+  "devDependencies": {
+    "lerna": "^4.0.0",
+    "typescript": "^4.2.4"
+  }
 }
