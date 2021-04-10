@@ -21,10 +21,9 @@ export const handler: Handler = async (event) => {
   console.log(`fetch static path '${staticPath}' from ${process.env.STATIC_WEBSITE}`)
   const staticResponse = await axios.get(`http://${process.env.STATIC_WEBSITE}${staticPath}`)
 
-  const app = await renderSsrApp();
+  const app = await renderSsrApp(staticResponse.data);
 
-  const body = staticResponse.data.replace('<div id="root"></div>', `<div id="root">${app}</div>`)
-    .replace(/\/static\//g, '/prod/static/')
+  const body = app.replace(/\/static\//g, '/prod/static/')
     .replace(/\/manifest.json/, '/prod/manifest.json')
     .replace(/\/favicon.ico/, '/prod/favicon.ico')
 

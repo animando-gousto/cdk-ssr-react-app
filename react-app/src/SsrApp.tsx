@@ -1,10 +1,11 @@
 import * as React from 'react';
+import Users from './pages/users'
 
 interface Props {
   ssr?: boolean,
   data?: any,
 }
-const App = ({ ssr, data }: Props) => {
+const App = ({ ssr }: Props) => {
   const timeoutRef = React.useRef<any>();
   const [hydrated, setHydrated] = React.useState(false);
   React.useEffect(() => {
@@ -18,7 +19,10 @@ const App = ({ ssr, data }: Props) => {
   }, [])
 
   return (
-    <p>Hello from React (ssr={ssr ? 'true' : 'false'}, hydrated={hydrated ? 'true' : 'false'}, data=${JSON.stringify(data)})</p>
+    <div>
+      <p>Hello from React (ssr={ssr ? 'true' : 'false'}, hydrated={hydrated ? 'true' : 'false'})</p>
+      <Users />
+    </div>
   )
 }
 
