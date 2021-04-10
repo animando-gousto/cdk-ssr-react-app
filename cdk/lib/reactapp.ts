@@ -2,7 +2,9 @@ import * as cdk from '@aws-cdk/core'
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as s3deploy from "@aws-cdk/aws-s3-deployment";
-
+import * as route53 from '@aws-cdk/aws-route53';
+import * as cert from '@aws-cdk/aws-certificatemanager'
+import * as targets from '@aws-cdk/aws-route53-targets';
 import * as apigw from '@aws-cdk/aws-apigateway'
 export interface ReactAppProps {
   apiUrl: string,
@@ -42,10 +44,31 @@ export class ReactApp extends cdk.Construct {
       }
     })
 
-    new apigw.LambdaRestApi(this, 'Home', {
+    const domainName = `${props.reactAppName}.${process.env.HOSTED_ZONE_NAME}`
+
+    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(this, 'App Hosted Zone', {
+      hostedZoneId: process.env.HOSTED_ZONE_ID || '',
+      zoneName: process.env.HOSTED_ZONE_NAME || '',
+    })
+    const certificate = new cert.Certificate(this, 'AppCertificate', {
+      domainName: domainName,
+      validation: cert.CertificateValidation.fromDns(hostedZone)
+    });
+
+    const appApiGateway = new apigw.LambdaRestApi(this, 'Home', {
       handler: handler,
       proxy: true,
+      domainName: {
+        domainName: domainName,
+        certificate,
+      }
     })
+    new route53.ARecord(this, 'CustomDomainAliasRecord', {
+      recordName: domainName,
+      zone: hostedZone,
+      target: route53.RecordTarget.fromAlias(new targets.ApiGateway(appApiGateway))
+    });
+
 
   }
 }
