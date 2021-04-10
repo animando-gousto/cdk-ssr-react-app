@@ -27,4 +27,33 @@ jobs:
         with:
           name: react-client-build
           path: react-app/build
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use NodeJS v10.12.0
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: 10.12.0
+      - name: Download lambda build
+        uses: actions/download-artifact@v2
+        with:
+          name: lambda-build
+      - name: Download react server build
+        uses: actions/download-artifact@v2
+        with:
+          name: react-server-build
+      - name: Download react client build
+        uses: actions/download-artifact@v2
+        with:
+          name: react-client-build
+      - run: mv lambda-build lambda/build
+      - run: mv react-server-build react-app/server-build
+      - run: mv react-client-build react-app/build
+      - name: Deploy
+        run: npm run deploy
+        env:
+          STACK_NAME: master
+
+
 
