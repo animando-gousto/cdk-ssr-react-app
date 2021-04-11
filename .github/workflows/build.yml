@@ -53,7 +53,7 @@ jobs:
         with:
           name: react-client-build
           path: react-app/build
-      - run: echo ${env.GITHUB_REF}
+      - run: echo ${GITHUB_REF}
       - name: Deploy
         run: npm run deploy
         env:
