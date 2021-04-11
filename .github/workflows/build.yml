@@ -64,3 +64,4 @@ jobs:
           HOSTED_ZONE_ID: ${{ secrets.HOSTED_ZONE_ID }}
           HOSTED_ZONE_NAME: ${{ secrets.HOSTED_ZONE_NAME }}
           API_ENDPOINT: ${{ format('master.{0}', secrets.API_HOSTED_ZONE_NAME) }}
+          SERVICE_TOKEN: ${{ format('master.{0}', secrets.SERVICE_TOKEN) }}

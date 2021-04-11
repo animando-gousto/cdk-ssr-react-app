@@ -10,7 +10,11 @@ const configureStore = async () => {
 
   console.log(`seed store from endpoint ${process.env.API_ENDPOINT}`)
 
-  const { data } = await axios.get<Array<User>>(`https://${process.env.API_ENDPOINT}/users`)
+  const { data } = await axios.get<Array<User>>(`https://${process.env.API_ENDPOINT}/users`, {
+    headers: {
+    'Authorization': process.env.SERVICE_TOKEN,
+    },
+  })
   const byId = data.reduce<Record<string, User>>((acc, user) => ({
     ...acc,
     [user.id]: user

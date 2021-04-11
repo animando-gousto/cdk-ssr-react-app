@@ -38,16 +38,17 @@ export class ReactApp extends cdk.Construct {
       handler: 'index.handler',
       code: lambda.Code.fromAsset('../react-app/server-build'),
       environment: {
-        API_ENDPOINT: process.env.API_ENDPOINT || '',
+        API_ENDPOINT: process.env.API_ENDPOINT!,
         STATIC_WEBSITE: reactAppBucket.bucketWebsiteDomainName,
+        SERVICE_TOKEN: process.env.SERVICE_TOKEN!,
       }
     })
 
     const domainName = `${props.reactAppName}.${process.env.HOSTED_ZONE_NAME}`
 
     const hostedZone = route53.HostedZone.fromHostedZoneAttributes(this, 'App Hosted Zone', {
-      hostedZoneId: process.env.HOSTED_ZONE_ID || '',
-      zoneName: process.env.HOSTED_ZONE_NAME || '',
+      hostedZoneId: process.env.HOSTED_ZONE_ID!,
+      zoneName: process.env.HOSTED_ZONE_NAME!,
     })
     const certificate = new cert.Certificate(this, 'AppCertificate', {
       domainName: domainName,
