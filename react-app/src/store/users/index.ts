@@ -2,10 +2,11 @@ import { createReducer, createAction, createSelector } from '@reduxjs/toolkit'
 import axios from 'axios';
 import merge from 'lodash/merge'
 import{ AppDispatch, RootState } from '../'
+import { getApiEndpoint } from '../config';
 
 const rootSelector = ({ users }: RootState) => users
 
-interface User {
+export interface User {
   id: string,
   firstName: string,
   surname: string,
@@ -22,8 +23,8 @@ export const usersAreLoaded = createSelector([rootSelector], ({ loaded }) => loa
 
 export const loadedUsers = createAction<Record<string, User>>('users/LOADED_USERS')
 
-export const loadUsers = () => async (dispatch: AppDispatch) => {
-  const response = await axios.get<Array<User>>('https://default.api.animando.co.uk/users');
+export const loadUsers = () => async (dispatch: AppDispatch, getState: () => RootState) => {
+  const response = await axios.get<Array<User>>(`https://${getApiEndpoint(getState())}/users`);
 
   const users = response.data
   const byId = users.reduce<Record<string, User>>((acc, user) => {

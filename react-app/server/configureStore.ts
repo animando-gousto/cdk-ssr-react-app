@@ -1,12 +1,21 @@
 import { createStore } from 'redux'
+import axios from 'axios';
 import rootReducer from '../src/store/rootReducer'
-import { loadedUsers } from '../src/store/users'
+import { loadedUsers, User } from '../src/store/users'
+import { setConfig } from '../src/store/config';
 
-const configureStore = () => {
+const configureStore = async () => {
 
   const store = createStore(rootReducer);
 
-  store.dispatch(loadedUsers({'1': {id: '1', firstName: 'Graham', surname: 'King'}}))
+  const { data } = await axios.get<Array<User>>(`https://${process.env.API_ENDPOINT}/users`)
+  const byId = data.reduce<Record<string, User>>((acc, user) => ({
+    ...acc,
+    [user.id]: user
+  }), {})
+
+  store.dispatch(loadedUsers(byId))
+  process.env.API_ENDPOINT && store.dispatch(setConfig({ apiEndpoint: process.env.API_ENDPOINT }))
 
   return store
 }

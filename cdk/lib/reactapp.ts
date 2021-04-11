@@ -7,7 +7,7 @@ import * as cert from '@aws-cdk/aws-certificatemanager'
 import * as targets from '@aws-cdk/aws-route53-targets';
 import * as apigw from '@aws-cdk/aws-apigateway'
 export interface ReactAppProps {
-  apiUrl: string,
+  apiEndpoint: string,
   reactAppName: string,
   bucketPrefix: string,
 }
@@ -39,7 +39,7 @@ export class ReactApp extends cdk.Construct {
       handler: 'index.handler',
       code: lambda.Code.fromAsset('../react-app/server-build'),
       environment: {
-        API_ENDPOINT: props.apiUrl,
+        API_ENDPOINT: props.apiEndpoint,
         STATIC_WEBSITE: reactAppBucket.bucketWebsiteDomainName,
       }
     })

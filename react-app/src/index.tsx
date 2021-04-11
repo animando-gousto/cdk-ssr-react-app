@@ -6,8 +6,7 @@ import { Provider } from 'react-redux'
 import App from './SsrApp'
 import reportWebVitals from './reportWebVitals';
 import configureStore from './store/configureStore';
-
-console.log('hydrating react app');
+import setupLocalState from './setupLocalState';
 
 // Grab the state from a global variable injected into the server-generated HTML
 const preloadedState = (window as any).__PRELOADED_STATE__ || undefined
@@ -15,9 +14,13 @@ delete (window as any).__PRELOADED_STATE__
 
 const store = configureStore(preloadedState)
 
-console.log(process.env.REACT_APP_LOCAL)
+console.log({local: process.env.REACT_APP_LOCAL, preloadedState })
 
-const renderMethod = process.env.REACT_APP_LOCAL ? ReactDOM.render : ReactDOM.hydrate
+if (!preloadedState) {
+  setupLocalState(store.dispatch)
+}
+
+const renderMethod = preloadedState ? ReactDOM.hydrate : ReactDOM.render
 renderMethod(
   <React.StrictMode>
     <Provider store={store}>

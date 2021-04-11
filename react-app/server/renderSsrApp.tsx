@@ -6,7 +6,7 @@ import App from '../src/SsrApp'
 import configureStore from './configureStore';
 
 const renderSsrApp = async (page: string) => {
-  const store = configureStore();
+  const store = await configureStore();
 
   const app = renderToString(
     <Provider store={store}>

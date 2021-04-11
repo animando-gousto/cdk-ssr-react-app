@@ -1,6 +1,5 @@
 import * as cdk from '@aws-cdk/core';
 import { ReactApp } from './reactapp'
-import { Api } from './api'
 
 interface StackProps extends cdk.StackProps {
   suffix: string,
@@ -15,10 +14,8 @@ export class AppStack extends cdk.Stack {
       description: 'Unique prefix of the s3 bucket',
     })
 
-    const api = new Api(this, 'Api');
-
     new ReactApp(this, 'ReactApp', {
-      apiUrl: api.endpointUrl,
+      apiEndpoint: process.env.API_ENDPOINT || '',
       reactAppName: props.suffix,
       bucketPrefix: bucketPrefix.valueAsString,
     });
