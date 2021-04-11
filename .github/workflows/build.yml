@@ -1,4 +1,4 @@
-name: learn-github-actions
+name: build
 on: [push]
 jobs:
   build:
@@ -63,4 +63,4 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           HOSTED_ZONE_ID: ${{ secrets.HOSTED_ZONE_ID }}
           HOSTED_ZONE_NAME: ${{ secrets.HOSTED_ZONE_NAME }}
-          API_ENDPOINT: ${{ format('https://master.{0}', secrets.API_HOSTED_ZONE_NAME) }}
+          API_ENDPOINT: ${{ format('master.{0}', secrets.API_HOSTED_ZONE_NAME) }}
