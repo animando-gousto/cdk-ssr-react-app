@@ -8,6 +8,8 @@ const configureStore = async () => {
 
   const store = createStore(rootReducer);
 
+  console.log(`seed store from endpoint ${process.env.API_ENDPOINT}`)
+
   const { data } = await axios.get<Array<User>>(`https://${process.env.API_ENDPOINT}/users`)
   const byId = data.reduce<Record<string, User>>((acc, user) => ({
     ...acc,

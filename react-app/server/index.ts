@@ -5,12 +5,9 @@ import axios from 'axios'
 import renderSsrApp from './renderSsrApp';
 
 export const handler: Handler = async (event) => {
-  console.log('react server handle event', JSON.stringify(event, null, 2));
-
 
   if (event.path.match(/(static|manifest.json|favicon.ico)/)) {
     const staticPath = event.path.replace(/^.*prod\//, '/')
-    console.log(`fetch static path '${staticPath}' from ${process.env.STATIC_WEBSITE}`)
     const staticResponse = await axios.get(`http://${process.env.STATIC_WEBSITE}${staticPath}`)
     return {
       statusCode: 200,
@@ -18,7 +15,6 @@ export const handler: Handler = async (event) => {
     }
   }
   const staticPath = event.path.replace(/^.*prod\//, '/')
-  console.log(`fetch static path '${staticPath}' from ${process.env.STATIC_WEBSITE}`)
   const staticResponse = await axios.get(`http://${process.env.STATIC_WEBSITE}${staticPath}`)
 
   const app = await renderSsrApp(staticResponse.data);
