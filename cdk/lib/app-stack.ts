@@ -15,7 +15,6 @@ export class AppStack extends cdk.Stack {
     })
 
     new ReactApp(this, 'ReactApp', {
-      apiEndpoint: process.env.API_ENDPOINT || '',
       reactAppName: props.suffix,
       bucketPrefix: bucketPrefix.valueAsString,
     });

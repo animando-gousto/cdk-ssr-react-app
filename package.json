@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "lerna run build --stream",
-    "deploy": "lerna run deploy --stream",
+    "build": "node -r dotenv/config node_modules/.bin/lerna run build --stream",
+    "deploy": "node -r dotenv/config node_modules/.bin/lerna run deploy --stream",
     "bootstrap": "lerna bootstrap --hoist"
   },
   "repository": {
