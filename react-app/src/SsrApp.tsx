@@ -1,28 +1,24 @@
 import * as React from 'react';
+import { Route, Switch, BrowserRouter as Router } from 'react-router-dom'
+import LoginForm from './components/LoginForm'
+import { WithBase } from './components/Base'
+import { UserIsNotLoggedIn } from './components/auth/routeWrappers';
+import { UserIsLoggedIn } from './components/auth/routeWrappers';
 import Users from './pages/users'
+import Home from './pages/Home'
 
-interface Props {
-  ssr?: boolean,
-  data?: any,
-}
-const App = ({ ssr }: Props) => {
-  const timeoutRef = React.useRef<any>();
-  const [hydrated, setHydrated] = React.useState(false);
-  React.useEffect(() => {
-    timeoutRef.current = setTimeout(() => {
-      setHydrated(true)
+const NotFound = () => <>Not Found</>
 
-    }, 500)
-    return () => {
-      timeoutRef.current && clearTimeout(timeoutRef.current);
-    }
-  }, [])
-
+const App = () => {
   return (
-    <div>
-      <p>Hello from React (ssr={ssr ? 'true' : 'false'}, hydrated={hydrated ? 'true' : 'false'})</p>
-      <Users />
-    </div>
+    <Router>
+      <Switch>
+        <Route path="/login" component={UserIsNotLoggedIn(WithBase(LoginForm))} />
+        <Route path="/" exact component={WithBase(Home)} />
+        <Route path="/users" component={UserIsLoggedIn(WithBase(Users))} />
+        <Route component={WithBase(NotFound)} />
+      </Switch>
+    </Router>
   )
 }
 

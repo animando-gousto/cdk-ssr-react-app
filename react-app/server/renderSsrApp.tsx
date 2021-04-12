@@ -10,7 +10,7 @@ const renderSsrApp = async (page: string) => {
 
   const app = renderToString(
     <Provider store={store}>
-      <App ssr />
+      <App />
     </Provider>
   );
 

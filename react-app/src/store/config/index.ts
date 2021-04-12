@@ -1,6 +1,6 @@
 import { createReducer, createAction, createSelector } from '@reduxjs/toolkit'
 import merge from 'lodash/merge'
-import{ RootState } from '../'
+import{ RootState } from '../types'
 
 const rootSelector = ({ config }: RootState) => config
 

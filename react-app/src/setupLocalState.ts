@@ -1,4 +1,4 @@
-import { AppDispatch } from './store';
+import { AppDispatch } from './store/types';
 import { setConfig } from './store/config';
 
 const setupLocalState = (dispatch: AppDispatch) => {

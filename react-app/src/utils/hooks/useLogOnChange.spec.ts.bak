@@ -1,0 +1,17 @@
+// import 'react-test-renderer'
+// import { renderHook, act } from '@testing-library/react-hooks/native'
+// import useLogOnChange from './useLogOnChange'
+// // const logger = jest.fn((log) => {
+
+// // });
+// xit('should increment counter', () => {
+//   const propName = 'testProp'
+//   const prop = 'value'
+//   renderHook(() => useLogOnChange({ propName, prop }))
+
+//   act(() => {
+
+//   })
+
+//   // expect(logger).toHaveBeenCalledTimes(1)
+// })

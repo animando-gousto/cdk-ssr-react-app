@@ -1,8 +1,9 @@
 import { createReducer, createAction, createSelector } from '@reduxjs/toolkit'
 import axios from 'axios';
 import merge from 'lodash/merge'
-import{ AppDispatch, RootState } from '../'
+import{ AppDispatch, RootState } from '../types'
 import { getApiEndpoint } from '../config';
+import { getToken } from '../session/state';
 
 const rootSelector = ({ users }: RootState) => users
 
@@ -24,7 +25,13 @@ export const usersAreLoaded = createSelector([rootSelector], ({ loaded }) => loa
 export const loadedUsers = createAction<Record<string, User>>('users/LOADED_USERS')
 
 export const loadUsers = () => async (dispatch: AppDispatch, getState: () => RootState) => {
-  const response = await axios.get<Array<User>>(`https://${getApiEndpoint(getState())}/users`);
+  const token = getToken(getState())
+  console.log('with token', token)
+  const response = await axios.get<Array<User>>(`https://${getApiEndpoint(getState())}/users`, {
+    headers: {
+      'Authorization': token,
+    }
+  });
 
   const users = response.data
   const byId = users.reduce<Record<string, User>>((acc, user) => {
