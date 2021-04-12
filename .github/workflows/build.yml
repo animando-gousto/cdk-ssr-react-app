@@ -5,10 +5,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Use NodeJS v10.12.0
+      - name: Use NodeJS v10.24.1
         uses: actions/setup-node@v2.1.5
         with:
-          node-version: 10.12.0
+          node-version: 10.24.1
       - run: npm install
       - run: npm run bootstrap
       - run: npm run build
@@ -32,10 +32,10 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v2
-      - name: Use NodeJS v10.12.0
+      - name: Use NodeJS v10.24.1
         uses: actions/setup-node@v2.1.5
         with:
-          node-version: 10.12.0
+          node-version: 10.24.1
       - run: npm install
       - run: npm run bootstrap
       - name: Download lambda build
