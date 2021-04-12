@@ -1,6 +1,7 @@
 import { createAction, createReducer, createSelector } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { ThunkAction } from 'redux-thunk'
+import { getApiEndpoint } from '../config'
 import rootSelector from '../rootSelector'
 import { RootState } from '../types'
 
@@ -24,8 +25,8 @@ export const sessionSelector = createSelector([rootSelector], ({ session }) => s
 export const userSelector = createSelector([sessionSelector], ({ user }) => user);
 export const getToken = createSelector([sessionSelector], ({ token }) => token);
 
-const callLoginApi = async (loginForm: LoginFormData) => {
-  const response = await axios.post(`https://${process.env.REACT_APP_API_ENDPOINT}/token`, loginForm)
+const callLoginApi = async (apiEndpoint: string, loginForm: LoginFormData) => {
+  const response = await axios.post(`https://${apiEndpoint}/token`, loginForm)
   console.log('login response', { response })
   return response.data
 }
@@ -36,8 +37,8 @@ export interface LoginFormData {
   username: string,
   password: string,
 }
-export const doLogin = (loginForm: LoginFormData): ThunkAction<void, RootState, unknown, any> => async (dispatch) => {
-  const loginResponse = await callLoginApi(loginForm);
+export const doLogin = (loginForm: LoginFormData): ThunkAction<void, RootState, unknown, any> => async (dispatch, getState) => {
+  const loginResponse = await callLoginApi(getApiEndpoint(getState()), loginForm);
   dispatch({type: 'session/ATTEMPT_LOGIN' })
   dispatch(login(loginResponse))
 }
