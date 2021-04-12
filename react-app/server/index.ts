@@ -17,7 +17,7 @@ export const handler: Handler = async (event) => {
   const staticPath = event.path.replace(/^.*prod\//, '/')
   const staticResponse = await axios.get(`http://${process.env.STATIC_WEBSITE}${staticPath}`)
 
-  const app = await renderSsrApp(staticResponse.data);
+  const app = await renderSsrApp(staticResponse.data, staticPath);
 
   const body = app.replace(/\/static\//g, '/prod/static/')
     .replace(/\/manifest.json/, '/prod/manifest.json')

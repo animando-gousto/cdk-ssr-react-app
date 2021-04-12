@@ -1,16 +1,23 @@
 import { useMemo, useEffect, RefObject } from 'react';
+import { useSsr } from '../../context/ssr';
 
 const useResizeCallback = (ref: RefObject<HTMLElement>, cb: (rect: DOMRectReadOnly) => void) => {
-  const ro = useMemo(() => new ResizeObserver(entries => {
-    for (let entry of entries) {
-      if (entry.contentRect) {
-        cb(entry.contentRect)
-      }
+  const ssr = useSsr();
+  const ro = useMemo(() => {
+    if (ssr) {
+      return null;
     }
-  }), [cb])
+    return new ResizeObserver(entries => {
+      for (let entry of entries) {
+        if (entry.contentRect) {
+          cb(entry.contentRect)
+        }
+      }
+    })
+  }, [cb])
 
   useEffect(() => {
-    if (ref.current) {
+    if (ref.current && ro) {
       ro.observe(ref.current)
     }
     return () => {

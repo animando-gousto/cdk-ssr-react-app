@@ -33,7 +33,7 @@ export class ReactApp extends cdk.Construct {
       sources: [s3deploy.Source.asset("../react-app/build/")],
       destinationBucket: reactAppBucket,
     });
-    const handler = new lambda.Function(this, 'ReactAppHandler', {
+    const reactAppServerHandler = new lambda.Function(this, 'ReactAppHandler', {
       runtime: lambda.Runtime.NODEJS_10_X,
       handler: 'index.handler',
       code: lambda.Code.fromAsset('../react-app/server-build'),
@@ -56,19 +56,17 @@ export class ReactApp extends cdk.Construct {
     });
 
     const appApiGateway = new apigw.LambdaRestApi(this, 'Home', {
-      handler: handler,
+      handler: reactAppServerHandler,
       proxy: true,
       domainName: {
         domainName: domainName,
         certificate,
-      }
+      },
     })
     new route53.ARecord(this, 'CustomDomainAliasRecord', {
       recordName: domainName,
       zone: hostedZone,
       target: route53.RecordTarget.fromAlias(new targets.ApiGateway(appApiGateway))
     });
-
-
   }
 }

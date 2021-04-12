@@ -10,6 +10,8 @@ import configureStore from './store/configureStore';
 import setupLocalState from './setupLocalState';
 import theme from './theme';
 import { PersistGate } from 'redux-persist/integration/react'
+import { BrowserRouter as Router } from 'react-router-dom'
+import ssrContext from './context/ssr';
 
 // Grab the state from a global variable injected into the server-generated HTML
 const preloadedState = (window as any).__PRELOADED_STATE__ || undefined
@@ -24,13 +26,17 @@ if (!preloadedState) {
 const renderMethod = preloadedState ? ReactDOM.hydrate : ReactDOM.render
 renderMethod(
   <React.StrictMode>
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
-      </PersistGate>
-    </Provider>
+    <ssrContext.Provider value={false}>
+      <Provider store={store}>
+        <Router>
+          <PersistGate loading={null} persistor={persistor}>
+            <ThemeProvider theme={theme}>
+              <App />
+            </ThemeProvider>
+          </PersistGate>
+        </Router>
+      </Provider>
+    </ssrContext.Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
