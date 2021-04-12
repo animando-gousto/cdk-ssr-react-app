@@ -3,6 +3,8 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SKIP_PREFLIGHT_CHECK: true
     steps:
       - uses: actions/checkout@v2
       - name: Use NodeJS v10.24.1
