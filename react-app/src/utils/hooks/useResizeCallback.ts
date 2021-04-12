@@ -14,7 +14,7 @@ const useResizeCallback = (ref: RefObject<HTMLElement>, cb: (rect: DOMRectReadOn
         }
       }
     })
-  }, [cb])
+  }, [cb, ssr])
 
   useEffect(() => {
     if (ref.current && ro) {
