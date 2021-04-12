@@ -1,4 +1,4 @@
-import { Route, Switch, BrowserRouter as Router } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import LoginForm from './components/LoginForm'
 import { WithBase } from './components/Base'
 import { UserIsNotLoggedIn } from './components/auth/routeWrappers';
