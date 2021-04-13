@@ -1,12 +1,11 @@
 import { ReactNode } from 'react'
-import useAuth from '../auth/useAuth'
 import {
   useHistory,
   Link,
 } from "react-router-dom";
 import styled from 'styled-components';
-import { useAppDispatch } from '../../store/hooks';
-import { doLogout } from '../../store/session/state';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { doLogout, getToken } from '../../store/session/state';
 import Table from 'react-bootstrap/Table'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
@@ -48,10 +47,10 @@ const StyledLink = styled(Link)`
   }
 `
 const AuthActions = () => {
-  const auth = useAuth();
+  const token = useAppSelector(getToken);
   return <MenuContainer>
     <MenuItemContainer>
-      {auth && auth.user ? <Logout /> : <StyledLink to="/login">Login</StyledLink>}
+      {token ? <Logout /> : <StyledLink to="/login">Login</StyledLink>}
     </MenuItemContainer>
   </MenuContainer>
 }

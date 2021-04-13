@@ -15,7 +15,7 @@ export class AppStack extends cdk.Stack {
     })
 
     new ReactApp(this, 'ReactApp', {
-      reactAppName: props.suffix,
+      suffix: props.suffix,
       bucketPrefix: bucketPrefix.valueAsString,
     });
   }

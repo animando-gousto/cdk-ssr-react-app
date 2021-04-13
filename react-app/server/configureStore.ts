@@ -8,8 +8,6 @@ const configureStore = async () => {
 
   const store = createStore(rootReducer);
 
-  console.log(`seed store from endpoint ${process.env.API_ENDPOINT}`)
-
   const { data } = await axios.get<Array<User>>(`https://${process.env.API_ENDPOINT}/users`, {
     headers: {
     'Authorization': process.env.SERVICE_TOKEN,

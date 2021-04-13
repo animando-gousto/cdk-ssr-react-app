@@ -14,7 +14,7 @@ interface SessionState {
 
 interface LoginPayload {
   token: string,
-  user: {
+  user?: {
     id: string,
   }
 }
@@ -26,7 +26,9 @@ export const userSelector = createSelector([sessionSelector], ({ user }) => user
 export const getToken = createSelector([sessionSelector], ({ token }) => token);
 
 const callLoginApi = async (apiEndpoint: string, loginForm: LoginFormData) => {
-  const response = await axios.post(`https://${apiEndpoint}/token`, loginForm)
+  const response = await axios.post(`https://${apiEndpoint}/token`, loginForm, {
+    withCredentials: true
+  })
   console.log('login response', { response })
   return response.data
 }

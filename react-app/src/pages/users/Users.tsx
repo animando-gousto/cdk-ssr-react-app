@@ -6,11 +6,14 @@ const Users = () => {
   const users = useSelector(getUsers);
   const usersLoaded = useSelector(usersAreLoaded);
   const dispatch = useDispatch();
+  const onLoadUsers = React.useCallback(() => {
+    dispatch(loadUsers())
+  }, [dispatch])
   React.useEffect(() => {
     if (!usersLoaded) {
-      dispatch(loadUsers())
+      onLoadUsers()
     }
-  }, [dispatch, usersLoaded])
+  }, [onLoadUsers, usersLoaded])
 
   return (
     <div>
@@ -18,6 +21,7 @@ const Users = () => {
       {users.map(({id, firstName}) => (
         <p key={id}>{firstName}</p>
       ))}
+      <button onClick={onLoadUsers}>Refresh</button>
     </div>
   )
 }

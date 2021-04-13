@@ -30,7 +30,8 @@ export const loadUsers = () => async (dispatch: AppDispatch, getState: () => Roo
   const response = await axios.get<Array<User>>(`https://${getApiEndpoint(getState())}/users`, {
     headers: {
       'Authorization': token,
-    }
+    },
+    withCredentials: true
   });
 
   const users = response.data

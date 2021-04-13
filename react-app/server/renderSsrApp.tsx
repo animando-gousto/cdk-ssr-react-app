@@ -7,9 +7,14 @@ import App from '../src/SsrApp'
 import configureStore from './configureStore';
 import { StaticRouter } from "react-router";
 import theme from '../src/theme'
+import { login } from '../src/store/session/state';
 
-const renderSsrApp = async (page: string, url: string) => {
+const renderSsrApp = async (page: string, url: string, token?: string) => {
   const store = await configureStore();
+  if (token) {
+    store.dispatch(login({token}))
+  }
+
   const routerContext = {}
   const app = renderToString(
     <Provider store={store}>
@@ -22,6 +27,8 @@ const renderSsrApp = async (page: string, url: string) => {
       </ssrContext.Provider>
     </Provider>
   );
+
+  console.log('Pre-rendered', app)
 
   const preloadedState = store.getState()
 
