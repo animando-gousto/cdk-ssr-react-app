@@ -2,7 +2,6 @@ import { useRef, useState, useCallback } from 'react';
 import Header from '../Header';
 import styled from 'styled-components';
 import useResizeCallback from '../../utils/hooks/useResizeCallback';
-import Icon from '../Icon'
 
 export const WithBase = (Component: React.ComponentType) => () => (
   <Base>
@@ -42,7 +41,7 @@ const Base = ({ children }: BaseProps) => {
       <Header />
       <div>
         <Main offsetRight={width}>{children}</Main>
-        <Sidebar ref={sidebarRef}><Icon icon={'check-square'} /></Sidebar>
+        <Sidebar ref={sidebarRef}></Sidebar>
       </div>
       <Footer>Footer</Footer>
     </div>
