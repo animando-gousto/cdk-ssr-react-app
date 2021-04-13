@@ -1,7 +1,7 @@
 
 import { Handler } from 'aws-lambda'
 import axios from 'axios'
-
+import Cookies from 'universal-cookie'
 import renderSsrApp from './renderSsrApp';
 
 export const handler: Handler = async (event) => {
@@ -27,23 +27,15 @@ export const handler: Handler = async (event) => {
     }
   }
   let token = undefined
-  try {
-    const tokenCookie = event.multiValueHeaders.cookie ?
-      event.multiValueHeaders.cookie.find((cookie: string) => cookie.match(/token/)) :
-      undefined
-    if (tokenCookie) {
-      console.log('got token cookie', tokenCookie)
-      const tokenValue = tokenCookie.split('=')[1]
-      console.log('got token', tokenValue)
-      const { data } = await axios.get<{ valid: boolean }>(`https://${process.env.API_ENDPOINT}/token/validate?token=${tokenValue}`)
-      if (data.valid) {
-        token = tokenValue
-      } else {
-        console.log('Token not valid')
-      }
+  const cookies = new Cookies(event.headers.cookie);
+  const tokenValue = cookies.get('token');
+  if (tokenValue) {
+    const { data } = await axios.get<{ valid: boolean }>(`https://${process.env.API_ENDPOINT}/token/validate?token=${tokenValue}`)
+    if (data.valid) {
+      token = tokenValue
+    } else {
+      console.log('Token not valid')
     }
-  } catch (e) {
-    console.warn(e)
   }
   const staticPath = event.path.replace(/^.*prod\//, '/')
   const staticResponse = await axios.get(`http://${process.env.STATIC_WEBSITE}/index.html`)

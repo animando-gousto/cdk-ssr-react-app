@@ -1,4 +1,4 @@
-import { Redirect } from 'react-router';
+import { Redirect, useLocation } from 'react-router';
 import { useAppSelector } from '../../store/hooks'
 import { RootState } from '../../store/types'
 
@@ -10,7 +10,8 @@ interface StateCheckingConfig {
 const StateCheckingRoute = (config: StateCheckingConfig) => (Component: React.ComponentType) => {
   const Internal: React.ComponentType = () => {
     const enablePath = useAppSelector(config.selector)
-    return enablePath ? <Component /> : <Redirect to={config.redirect} />
+    const location = useLocation()
+    return enablePath ? <Component /> : <Redirect to={`${config.redirect}?redirect=${location.pathname}`} />
   }
   return Internal
 }

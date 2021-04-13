@@ -47,7 +47,7 @@ export class ReactApp extends cdk.Construct {
       // certificate: cloudFrontCertificate,
       // domainNames: [cfDomainName],
     })
-    new cdk.CfnOutput(this, "CloudFront", { value: cfDistribution.distributionDomainName });
+    new cdk.CfnOutput(this, "CloudFrontDistributionId", { value: cfDistribution.distributionId });
 
     const reactAppServerHandler = new lambda.Function(this, 'ReactAppHandler', {
       runtime: lambda.Runtime.NODEJS_10_X,

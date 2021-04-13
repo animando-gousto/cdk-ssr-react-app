@@ -6,16 +6,16 @@ import {
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { doLogout, getToken } from '../../store/session/state';
-import Table from 'react-bootstrap/Table'
+import Container from 'react-bootstrap/Container'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 
 const MenuContainer = ({ children }: {children: ReactNode}) => (
-  <Table>
+  <Container>
     <Row>
       {children}
     </Row>
-  </Table>
+  </Container>
 )
 const MenuItemContainer = ({ children }: {children: ReactNode}) => (
   <Col xs={false} sm="12" md="4">

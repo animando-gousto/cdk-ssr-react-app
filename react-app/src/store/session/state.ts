@@ -4,7 +4,9 @@ import { ThunkAction } from 'redux-thunk'
 import { getApiEndpoint } from '../config'
 import rootSelector from '../rootSelector'
 import { RootState } from '../types'
+import Cookies from 'universal-cookie'
 
+const cookie = new Cookies()
 interface SessionState {
   token?: string,
   user?: {
@@ -29,11 +31,11 @@ const callLoginApi = async (apiEndpoint: string, loginForm: LoginFormData) => {
   const response = await axios.post(`https://${apiEndpoint}/token`, loginForm, {
     withCredentials: true
   })
-  console.log('login response', { response })
   return response.data
 }
 export const doLogout = (): ThunkAction<void, RootState, unknown, any> => async (dispatch) => {
   dispatch(logout())
+  cookie.remove('token')
 }
 export interface LoginFormData {
   username: string,
@@ -41,7 +43,6 @@ export interface LoginFormData {
 }
 export const doLogin = (loginForm: LoginFormData): ThunkAction<void, RootState, unknown, any> => async (dispatch, getState) => {
   const loginResponse = await callLoginApi(getApiEndpoint(getState()), loginForm);
-  dispatch({type: 'session/ATTEMPT_LOGIN' })
   dispatch(login(loginResponse))
 }
 
@@ -56,9 +57,6 @@ const sessionReducer = createReducer(initialState, (builder) => {
     .addCase(logout, (state, {payload}) => {
       state.token = undefined
       state.user = undefined
-    })
-    .addDefaultCase(() => {
-
     })
 })
 
