@@ -1,9 +1,6 @@
 import { createReducer, createAction, createSelector } from '@reduxjs/toolkit'
-import axios from 'axios';
 import merge from 'lodash/merge'
-import{ AppDispatch, RootState } from '../types'
-import { getApiEndpoint } from '../config';
-import { getToken } from '../session/state';
+import{ RootState } from '../types'
 
 const rootSelector = ({ users }: RootState) => users
 
@@ -22,27 +19,15 @@ export const getUsersById = createSelector([rootSelector], (users) => users.enti
 export const getUsers = createSelector([getUsersById], (entities) => Object.values(entities));
 export const usersAreLoaded = createSelector([rootSelector], ({ loaded }) => loaded);
 
-export const loadedUsers = createAction<Record<string, User>>('users/LOADED_USERS')
+export type GetUsersSuccessPayload = User[]
+export const loadedUsers = createAction<GetUsersSuccessPayload>('users/LOADED_USERS')
 
-export const loadUsers = () => async (dispatch: AppDispatch, getState: () => RootState) => {
-  const token = getToken(getState())
-  console.log('with token', token)
-  const response = await axios.get<Array<User>>(`https://${getApiEndpoint(getState())}/users`, {
-    headers: {
-      'Authorization': token,
-    },
-    withCredentials: true
-  });
-
-  const users = response.data
-  const byId = users.reduce<Record<string, User>>((acc, user) => {
-    return {
-      ...acc,
-      [user.id]: user
-    }
-  }, {})
-  dispatch(loadedUsers(byId))
-}
+const byId = (users: User[]) => users.reduce<Record<string, User>>((acc, user) => {
+  return {
+    ...acc,
+    [user.id]: user
+  }
+}, {})
 
 const initialState = {
   entities: {
@@ -52,7 +37,7 @@ const initialState = {
 
 export const usersReducer =createReducer(initialState, builder => {
   builder.addCase(loadedUsers, (state, action) => {
-    merge(state.entities, action.payload);
+    merge(state.entities, byId(action.payload));
     state.loaded = true;
   })
 })

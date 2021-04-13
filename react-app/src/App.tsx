@@ -3,7 +3,7 @@ import LoginForm from './components/LoginForm'
 import { WithBase } from './components/Base'
 import { UserIsNotLoggedIn } from './components/auth/routeWrappers';
 import { UserIsLoggedIn } from './components/auth/routeWrappers';
-import Users from './pages/users'
+import Users from './pages/Users'
 import Home from './pages/Home'
 
 const NotFound = () => <>Not Found</>

@@ -10,15 +10,10 @@ const configureStore = async () => {
 
   const { data } = await axios.get<Array<User>>(`https://${process.env.API_ENDPOINT}/users`, {
     headers: {
-    'Authorization': process.env.SERVICE_TOKEN,
+      'Authorization': process.env.SERVICE_TOKEN,
     },
   })
-  const byId = data.reduce<Record<string, User>>((acc, user) => ({
-    ...acc,
-    [user.id]: user
-  }), {})
-
-  store.dispatch(loadedUsers(byId))
+  store.dispatch(loadedUsers(data))
   process.env.API_ENDPOINT && store.dispatch(setConfig({ apiEndpoint: process.env.API_ENDPOINT }))
 
   return store

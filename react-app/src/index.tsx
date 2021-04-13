@@ -4,7 +4,7 @@ import './index.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Provider } from 'react-redux'
 import { ThemeProvider } from 'styled-components';
-import App from './SsrApp'
+import App from './App'
 import reportWebVitals from './reportWebVitals';
 import configureStore from './store/configureStore';
 import setupLocalState from './setupLocalState';

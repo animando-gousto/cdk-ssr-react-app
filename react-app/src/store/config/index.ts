@@ -8,7 +8,7 @@ interface ConfigState {
   apiEndpoint: string,
 }
 
-export const getApiEndpoint = createSelector([rootSelector], ({apiEndpoint}) => apiEndpoint);
+export const getApiEndpoint = createSelector([rootSelector], (root) => root.apiEndpoint);
 
 export const setConfig = createAction<ConfigState>('config/SET_CONFIG')
 

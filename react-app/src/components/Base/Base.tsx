@@ -28,7 +28,7 @@ const Footer = styled.footer`
 `
 
 const Base = ({ children }: BaseProps) => {
-  const sidebarRef = useRef<HTMLElement>(null) as any;
+  const sidebarRef = useRef<HTMLElement>(null);
   const [width, setWidth] = useState(0);
 
   const updateWidth = useCallback((rect) => {

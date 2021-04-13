@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import ssrContext from '../src/context/ssr'
 import { ThemeProvider } from 'styled-components'
 import { renderToString } from 'react-dom/server';
-import App from '../src/SsrApp'
+import App from '../src/App'
 import configureStore from './configureStore';
 import { StaticRouter } from "react-router";
 import theme from '../src/theme'
