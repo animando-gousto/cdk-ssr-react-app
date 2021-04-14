@@ -2,9 +2,7 @@ import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUsers as getUsersSelector, usersAreLoaded } from '../../store/users';
 
-import {httpActionCreators} from '../../store/sagas/httpSaga'
-
-const { getUsers } = httpActionCreators
+import { getUsers } from '../../store/sagas/httpSaga'
 
 type Users = ReturnType<typeof getUsersSelector>
 
@@ -27,7 +25,6 @@ const UsersPage = () => {
   const usersLoaded = useSelector(usersAreLoaded);
   const dispatch = useDispatch();
   const onLoadUsers = React.useCallback(async () => {
-    // dispatch(loadUsers())
     dispatch(getUsers('payload'))
   }, [dispatch])
 

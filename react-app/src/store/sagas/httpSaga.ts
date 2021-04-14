@@ -5,12 +5,17 @@ import { loadedUsers } from '../users'
 import { getApiEndpoint } from '../config'
 import axios from 'axios'
 import { getToken } from '../session/state'
+import URI from 'urijs'
 
-function* doGet (config: HttpSagaConfig<any>, payload: any): Generator<any, any, any> {
+interface GetRequestPayload {
+  queries: Record<string, string>
+  headers?: Record<string, string>,
+}
+function* doGet (config: HttpSagaConfig<any>, payload: GetRequestPayload): Generator<any, any, any> {
   const apiEndpoint = yield select(getApiEndpoint)
   const token = yield select(getToken)
-  console.log('GET', apiEndpoint, config.path)
-  const response = yield call(axios.get, `https://${apiEndpoint}${config.path}`, {
+  const uri = new URI(`https://${apiEndpoint}${config.path}`).query(URI.buildQuery({a: 'b'})).valueOf()
+  const response = yield call(axios.get, uri, {
     withCredentials: true,
     headers: {
       Authorization: token,
@@ -18,13 +23,37 @@ function* doGet (config: HttpSagaConfig<any>, payload: any): Generator<any, any,
   })
   return response.data
 }
+interface PostRequestPayload<B> {
+  queries: Record<string, string>
+  headers?: Record<string, string>,
+  body?: B,
+}
+function* doPost <B>(config: HttpSagaConfig<any>, payload: PostRequestPayload<B>): Generator<any, any, any> {
+  const apiEndpoint = yield select(getApiEndpoint)
+  const token = yield select(getToken)
+  const uri = new URI(`https://${apiEndpoint}${config.path}`).query(URI.buildQuery({a: 'b'})).valueOf()
+  const response = yield call(axios.post, uri, {
+    withCredentials: true,
+    headers: {
+      Authorization: token,
+    },
+    body: payload.body,
+  })
+  return response.data
+}
+
+type HttpMethod = 'GET' | 'POST'// | 'PUT' | 'DELETE'
+const methodHandlers: Record<HttpMethod, any> = {
+  GET: doGet,
+  POST: doPost,
+}
 
 function* doApiCall(config: HttpSagaConfig<any>, payload: any): Generator<any> {
   return yield call(doGet, config, payload)
 }
 
 type HttpSagaConfig<R> = {
-  method: string,
+  method: HttpMethod,
   path: string,
   action: string,
   successAction: ActionCreatorWithPayload<R>,
@@ -39,15 +68,23 @@ const configs: Record<string, HttpSagaConfig<any>> = {
   }
 }
 
-const createDispatchAction = <R, P = void>(config: HttpSagaConfig<R>)=> {
-  const doAction = createAction<P, typeof config.action>(config.action);
+const createDispatchAction = <R>(config: HttpSagaConfig<R>)=> {
+  const method = config.method
+  const handler = methodHandlers[method]
+  type PayloadType = Parameters<typeof handler>
+  const doAction = createAction<PayloadType, typeof config.action>(config.action);
   return doAction
 }
+type ConfigKeys = keyof typeof configs
+const httpActionCreators: Record<keyof typeof configs, ActionCreatorWithPayload<any>> = Object.keys(configs).reduce((acc, c) => {
+  const config = configs[c]
+  return {
+    ...acc,
+    [c]: createDispatchAction(config)
+  }
+}, {})
 
-export const httpActionCreators: Record<keyof typeof configs, ActionCreatorWithPayload<any>> = Object.keys(configs).reduce((acc, c) => ({
-  ...acc,
-  [c]: createDispatchAction(configs[c]),
-}), {})
+export const { getUsers } = httpActionCreators
 
 export const httpRequest = createAction<any>('HTTP_REQUEST');
 
@@ -57,7 +94,6 @@ const createSagaFromConfig = <T>(config: HttpSagaConfig<T>) => {
     yield put(requestSent(config.action))
     try {
       const response: T = yield call(doApiCall, config, payload)
-      console.log({response})
       yield put(requestSucceeded(config.action))
       yield put(config.successAction(response as any))
     } catch (err) {
@@ -70,7 +106,6 @@ const createSagaFromConfig = <T>(config: HttpSagaConfig<T>) => {
   }
 
   return function* (): any {
-    // const channel = yield actionChannel(config.action, buffers.sliding(1))
     let lastTask
     while (true) {
       const action = yield take(config.action)
