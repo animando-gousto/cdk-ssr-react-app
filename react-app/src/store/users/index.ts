@@ -1,6 +1,8 @@
 import { createReducer, createAction, createSelector } from '@reduxjs/toolkit'
 import merge from 'lodash/merge'
-import{ RootState } from '../types'
+import { logout } from '../session/state';
+import { RootState } from '../types'
+import { HttpSuccessPayload } from '../sagas/http/types'
 
 const rootSelector = ({ users }: RootState) => users
 
@@ -20,7 +22,7 @@ export const getUsers = createSelector([getUsersById], (entities) => Object.valu
 export const usersAreLoaded = createSelector([rootSelector], ({ loaded }) => loaded);
 
 export type GetUsersSuccessPayload = User[]
-export const loadedUsers = createAction<GetUsersSuccessPayload>('users/LOADED_USERS')
+export const loadedUsers = createAction<HttpSuccessPayload<GetUsersSuccessPayload>>('users/LOADED_USERS')
 
 const byId = (users: User[]) => users.reduce<Record<string, User>>((acc, user) => {
   return {
@@ -35,9 +37,13 @@ const initialState = {
   loaded: false,
 } as UsersState
 
-export const usersReducer =createReducer(initialState, builder => {
+export const usersReducer = createReducer(initialState, builder => {
   builder.addCase(loadedUsers, (state, action) => {
-    merge(state.entities, byId(action.payload));
+    merge(state.entities, byId(action.payload.response));
     state.loaded = true;
+  })
+  builder.addCase(logout, (state, action) => {
+    state.entities = {}
+    state.loaded = false;
   })
 })

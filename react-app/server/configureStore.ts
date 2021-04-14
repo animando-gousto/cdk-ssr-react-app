@@ -13,7 +13,7 @@ const configureStore = async () => {
       'Authorization': process.env.SERVICE_TOKEN,
     },
   })
-  store.dispatch(loadedUsers(data))
+  store.dispatch(loadedUsers({ response: data }))
   process.env.API_ENDPOINT && store.dispatch(setConfig({ apiEndpoint: process.env.API_ENDPOINT }))
 
   return store
