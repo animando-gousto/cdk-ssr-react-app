@@ -6,7 +6,7 @@ import rootSelector from '../rootSelector'
 import { RootState } from '../types'
 import Cookies from 'universal-cookie'
 import { LoginSuccessfulPayload } from './types'
-import { HttpSuccessPayload } from '../sagas/types'
+import { HttpSuccessPayload } from '../sagas/http/types'
 
 const cookie = new Cookies()
 interface SessionState {

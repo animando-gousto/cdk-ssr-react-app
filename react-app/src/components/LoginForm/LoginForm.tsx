@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { useAppDispatch } from '../../store/hooks'
 import { LoginFormData } from '../../store/session/state'
 import urlParse from 'url-parse'
-import { requestToken } from '../../store/sagas/httpSaga'
+import { requestToken } from '../../store/sagas/http/httpSaga'
 
 const AsyncSubmitButton = styled.button.attrs((props: any) => {
   return ({

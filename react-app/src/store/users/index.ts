@@ -2,7 +2,7 @@ import { createReducer, createAction, createSelector } from '@reduxjs/toolkit'
 import merge from 'lodash/merge'
 import { logout } from '../session/state';
 import { RootState } from '../types'
-import { HttpSuccessPayload } from '../sagas/types'
+import { HttpSuccessPayload } from '../sagas/http/types'
 
 const rootSelector = ({ users }: RootState) => users
 

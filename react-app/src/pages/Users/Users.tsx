@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUsers as getUsersSelector, usersAreLoaded } from '../../store/users';
 
-import { getUsers } from '../../store/sagas/httpSaga'
+import { getUsers } from '../../store/sagas/http/httpSaga'
 
 type Users = ReturnType<typeof getUsersSelector>
 

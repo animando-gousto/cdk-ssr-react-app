@@ -1,5 +1,5 @@
 import { call, takeEvery } from '@redux-saga/core/effects'
-import { HttpSuccessPayload } from '../sagas/types'
+import { HttpSuccessPayload } from '../sagas/http/types'
 import { loginSuccessful } from './state'
 import { LoginSuccessfulPayload } from './types'
 
