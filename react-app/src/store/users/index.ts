@@ -1,5 +1,6 @@
 import { createReducer, createAction, createSelector } from '@reduxjs/toolkit'
 import merge from 'lodash/merge'
+import { logout } from '../session/state';
 import{ RootState } from '../types'
 
 const rootSelector = ({ users }: RootState) => users
@@ -35,9 +36,13 @@ const initialState = {
   loaded: false,
 } as UsersState
 
-export const usersReducer =createReducer(initialState, builder => {
+export const usersReducer = createReducer(initialState, builder => {
   builder.addCase(loadedUsers, (state, action) => {
     merge(state.entities, byId(action.payload));
     state.loaded = true;
+  })
+  builder.addCase(logout, (state, action) => {
+    state.entities = {}
+    state.loaded = false;
   })
 })

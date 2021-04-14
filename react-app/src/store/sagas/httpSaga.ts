@@ -4,17 +4,17 @@ import { requestSent, requestSucceeded, requestCancelled, requestFailed } from '
 import { GetUsersSuccessPayload, loadedUsers } from '../users'
 import { getApiEndpoint } from '../config'
 import axios from 'axios'
-import { getToken, login } from '../session/state'
+import { getToken, loginSuccessful } from '../session/state'
 import URI from 'urijs'
 
 interface GetRequestPayload {
-  queries: Record<string, string>
+  queries?: Record<string, string>
   headers?: Record<string, string>,
 }
 function* doGet (config: HttpSagaConfig<any>, payload: GetRequestPayload): Generator<any, any, any> {
   const apiEndpoint = yield select(getApiEndpoint)
   const token = yield select(getToken)
-  const uri = new URI(`https://${apiEndpoint}${config.path}`).query(URI.buildQuery({a: 'b'})).valueOf()
+  const uri = new URI(`https://${apiEndpoint}${config.path}`).query(URI.buildQuery(payload.queries || {})).valueOf()
   const response = yield call(axios.get, uri, {
     withCredentials: true,
     headers: {
@@ -24,27 +24,27 @@ function* doGet (config: HttpSagaConfig<any>, payload: GetRequestPayload): Gener
   return response.data
 }
 interface PostRequestPayload<B> {
-  queries: Record<string, string>
   headers?: Record<string, string>,
   body?: B,
 }
 function* doPost <B>(config: HttpSagaConfig<any>, payload: PostRequestPayload<B>): Generator<any, any, any> {
   const apiEndpoint = yield select(getApiEndpoint)
   const token = yield select(getToken)
-  const uri = new URI(`https://${apiEndpoint}${config.path}`).query(URI.buildQuery({a: 'b'})).valueOf()
-  const response = yield call(axios.post, uri, {
+  const response = yield call(axios.post, `https://${apiEndpoint}${config.path}`, payload.body, {
     withCredentials: true,
     headers: {
       Authorization: token,
+      'Content-Type': 'application/json',
     },
-    body: payload.body,
   })
   return response.data
 }
 
 type HttpMethod = 'GET' | 'POST'// | 'PUT' | 'DELETE'
+
 type MethodHandlers = {
-  [K in HttpMethod]: typeof doPost | typeof doGet
+  'GET': typeof doGet,
+  'POST': typeof doPost,
 }
 const methodHandlers: MethodHandlers = {
   GET: doGet,
@@ -52,10 +52,15 @@ const methodHandlers: MethodHandlers = {
 }
 
 function* doApiCall(config: HttpSagaConfig<any>, payload: any): Generator<any> {
-  return yield call(doGet, config, payload)
+  if (config.method === 'GET') {
+    return yield call(doGet, config, payload)
+  }
+  if (config.method === 'POST') {
+    return yield call(doPost, config, payload)
+  }
 }
 
-type ConfigNames = 'getUsers' | 'token' // it would be nice to infer this from `configs`
+type ConfigNames = 'getUsers' | 'requestToken' // it would be nice to infer this from `configs`
 type HttpSagaConfig<R> = {
   method: HttpMethod,
   path: string,
@@ -70,17 +75,17 @@ const configs: Record<ConfigNames, HttpSagaConfig<any>> = {
     action: 'users/GET_USERS',
     successAction: loadedUsers,
   } as HttpSagaConfig<GetUsersSuccessPayload>,
-  'token': {
+  'requestToken': {
     path: '/token',
     method: 'POST',
-    action: 'token/TOKEN',
-    successAction: login,
+    action: 'session/REQUEST_TOKEN',
+    successAction: loginSuccessful,
   }
 }
 const createDispatchAction = <R>(config: HttpSagaConfig<R>)=> {
   const method = config.method
   const handler = methodHandlers[method]
-  type PayloadType = Parameters<typeof handler>
+  type PayloadType = Parameters<typeof handler>[1]
   const doAction = createAction<PayloadType, typeof config.action>(config.action);
   return doAction
 }
@@ -97,7 +102,7 @@ const httpActionCreators: HttpActionCreators = configKeys.reduce<Record<ConfigNa
   }
 }, {} as Record<ConfigNames, ActionCreatorWithPayload<any>>)
 
-export const { getUsers } = httpActionCreators
+export const { getUsers, requestToken } = httpActionCreators
 
 export const httpRequest = createAction<any>('HTTP_REQUEST');
 
