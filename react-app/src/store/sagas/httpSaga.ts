@@ -1,10 +1,10 @@
 import { ActionCreatorWithPayload, createAction } from '@reduxjs/toolkit'
 import { fork, all, call, put, take, cancelled, select } from 'redux-saga/effects'
 import { requestSent, requestSucceeded, requestCancelled, requestFailed } from '../http'
-import { loadedUsers } from '../users'
+import { GetUsersSuccessPayload, loadedUsers } from '../users'
 import { getApiEndpoint } from '../config'
 import axios from 'axios'
-import { getToken } from '../session/state'
+import { getToken, login } from '../session/state'
 import URI from 'urijs'
 
 interface GetRequestPayload {
@@ -52,6 +52,7 @@ function* doApiCall(config: HttpSagaConfig<any>, payload: any): Generator<any> {
   return yield call(doGet, config, payload)
 }
 
+type ConfigNames = 'getUsers' | 'token' // it would be nice to infer this from `configs`
 type HttpSagaConfig<R> = {
   method: HttpMethod,
   path: string,
@@ -59,15 +60,20 @@ type HttpSagaConfig<R> = {
   successAction: ActionCreatorWithPayload<R>,
 }
 
-const configs: Record<string, HttpSagaConfig<any>> = {
+const configs: Record<ConfigNames, HttpSagaConfig<any>> = {
   'getUsers': {
     path: '/users',
     method: 'GET',
     action: 'users/GET_USERS',
     successAction: loadedUsers,
+  } as HttpSagaConfig<GetUsersSuccessPayload>,
+  'token': {
+    path: '/token',
+    method: 'POST',
+    action: 'token/TOKEN',
+    successAction: login,
   }
 }
-
 const createDispatchAction = <R>(config: HttpSagaConfig<R>)=> {
   const method = config.method
   const handler = methodHandlers[method]
@@ -75,14 +81,14 @@ const createDispatchAction = <R>(config: HttpSagaConfig<R>)=> {
   const doAction = createAction<PayloadType, typeof config.action>(config.action);
   return doAction
 }
-type ConfigKeys = keyof typeof configs
-const httpActionCreators: Record<keyof typeof configs, ActionCreatorWithPayload<any>> = Object.keys(configs).reduce((acc, c) => {
-  const config = configs[c]
+type HttpActionCreators = Record<ConfigNames, ActionCreatorWithPayload<any>>
+
+const httpActionCreators: HttpActionCreators = (Object.keys(configs) as Array<ConfigNames>).reduce<Record<ConfigNames, any>>((acc, c) => {
   return {
     ...acc,
-    [c]: createDispatchAction(config)
+    [c]: createDispatchAction(configs[c])
   }
-}, {})
+}, {} as Record<ConfigNames, any>)
 
 export const { getUsers } = httpActionCreators
 
@@ -118,7 +124,7 @@ const createSagaFromConfig = <T>(config: HttpSagaConfig<T>) => {
 }
 
 function* httpSaga() {
-  const httpSagas = Object.keys(configs).map(action => createSagaFromConfig(configs[action])())
+  const httpSagas = Object.values(configs).map(c => createSagaFromConfig(c)())
 
   yield all([
     ...httpSagas,
