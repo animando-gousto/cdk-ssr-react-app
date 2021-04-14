@@ -7,12 +7,12 @@ import App from '../src/App'
 import configureStore from './configureStore';
 import { StaticRouter } from "react-router";
 import theme from '../src/theme'
-import { login } from '../src/store/session/state';
+import { loginSuccessful } from '../src/store/session/state';
 
 const renderSsrApp = async (page: string, url: string, token?: string) => {
   const store = await configureStore();
   if (token) {
-    store.dispatch(login({token}))
+    store.dispatch(loginSuccessful({ response: { token }}))
   }
 
   const routerContext = {}

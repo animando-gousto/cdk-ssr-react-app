@@ -3,10 +3,9 @@ import { Form, Field } from 'react-final-form'
 import { useHistory, useLocation } from 'react-router'
 import styled from 'styled-components'
 import { useAppDispatch } from '../../store/hooks'
-import { getToken, LoginFormData } from '../../store/session/state'
+import { LoginFormData } from '../../store/session/state'
 import urlParse from 'url-parse'
 import { requestToken } from '../../store/sagas/httpSaga'
-import { useSelector } from 'react-redux'
 
 const AsyncSubmitButton = styled.button.attrs((props: any) => {
   return ({
@@ -21,21 +20,16 @@ const useLogin = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const history = useHistory();
-  const token = useSelector(getToken);
-  const tokenRef = React.useRef(token)
   const redirect = urlParse(`${location.pathname}${location.search}`, true).query.redirect
 
-  React.useEffect(() => {
-    if (!tokenRef.current && token) {
-      redirect && history.push(redirect);
-    }
-    tokenRef.current = token;
-  }, [token, redirect, history])
-
+  const doRedirect = React.useCallback(() => {
+    console.log('do redirect')
+    redirect && history.push(redirect);
+  }, [redirect, history])
 
   const onSubmit = React.useCallback((formValues: LoginFormData) => {
-    dispatch(requestToken({ body: formValues }))
-  }, [dispatch])
+    dispatch(requestToken({ body: formValues, context: { doRedirect } }))
+  }, [dispatch, doRedirect])
 
   return onSubmit
 }
