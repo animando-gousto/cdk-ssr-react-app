@@ -25,7 +25,7 @@ const UsersPage = () => {
   const usersLoaded = useSelector(usersAreLoaded);
   const dispatch = useDispatch();
   const onLoadUsers = React.useCallback(async () => {
-    dispatch(getUsers('payload'))
+    dispatch(getUsers({queries: {q: 'Graham'}}))
   }, [dispatch])
 
   React.useEffect(() => {

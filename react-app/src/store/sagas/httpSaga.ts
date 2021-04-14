@@ -43,7 +43,10 @@ function* doPost <B>(config: HttpSagaConfig<any>, payload: PostRequestPayload<B>
 }
 
 type HttpMethod = 'GET' | 'POST'// | 'PUT' | 'DELETE'
-const methodHandlers: Record<HttpMethod, any> = {
+type MethodHandlers = {
+  [K in HttpMethod]: typeof doPost | typeof doGet
+}
+const methodHandlers: MethodHandlers = {
   GET: doGet,
   POST: doPost,
 }
@@ -81,14 +84,18 @@ const createDispatchAction = <R>(config: HttpSagaConfig<R>)=> {
   const doAction = createAction<PayloadType, typeof config.action>(config.action);
   return doAction
 }
-type HttpActionCreators = Record<ConfigNames, ActionCreatorWithPayload<any>>
+type HttpActionCreators = {
+  [K in ConfigNames]: ActionCreatorWithPayload<Parameters<typeof methodHandlers[typeof configs[K]['method']]>[1]>
+}
 
-const httpActionCreators: HttpActionCreators = (Object.keys(configs) as Array<ConfigNames>).reduce<Record<ConfigNames, any>>((acc, c) => {
+const configKeys = Object.keys(configs) as Array<ConfigNames>
+
+const httpActionCreators: HttpActionCreators = configKeys.reduce<Record<ConfigNames, ActionCreatorWithPayload<any>>>((acc, c) => {
   return {
     ...acc,
     [c]: createDispatchAction(configs[c])
   }
-}, {} as Record<ConfigNames, any>)
+}, {} as Record<ConfigNames, ActionCreatorWithPayload<any>>)
 
 export const { getUsers } = httpActionCreators
 
