@@ -8,6 +8,7 @@ import * as route53 from '@aws-cdk/aws-route53';
 import * as cert from '@aws-cdk/aws-certificatemanager'
 import * as targets from '@aws-cdk/aws-route53-targets';
 import * as apigw from '@aws-cdk/aws-apigateway'
+import { Duration } from '@aws-cdk/core';
 export interface ReactAppProps {
   suffix: string,
   bucketPrefix: string,
@@ -57,7 +58,8 @@ export class ReactApp extends cdk.Construct {
         API_ENDPOINT: process.env.API_ENDPOINT!,
         STATIC_WEBSITE: cfDistribution.distributionDomainName,
         SERVICE_TOKEN: process.env.SERVICE_TOKEN!,
-      }
+      },
+      timeout: Duration.seconds(20),
     })
     const appApiGateway = new apigw.LambdaRestApi(this, 'Home', {
       handler: reactAppServerHandler,
