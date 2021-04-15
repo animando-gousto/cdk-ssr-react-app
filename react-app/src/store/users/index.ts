@@ -7,7 +7,7 @@ import { HttpSuccessPayload } from '../sagas/http/types'
 const rootSelector = ({ users }: RootState) => users
 
 export interface User {
-  id: string,
+  username: string,
   firstName: string,
   surname: string,
 }
@@ -22,12 +22,14 @@ export const getUsers = createSelector([getUsersById], (entities) => Object.valu
 export const usersAreLoaded = createSelector([rootSelector], ({ loaded }) => loaded);
 
 export type GetUsersSuccessPayload = User[]
+export type UserAddedSuccessPayload = User
 export const loadedUsers = createAction<HttpSuccessPayload<GetUsersSuccessPayload>>('users/LOADED_USERS')
+export const userAdded = createAction<HttpSuccessPayload<UserAddedSuccessPayload>>('users/USER_ADDED')
 
 const byId = (users: User[]) => users.reduce<Record<string, User>>((acc, user) => {
   return {
     ...acc,
-    [user.id]: user
+    [user.username]: user
   }
 }, {})
 
@@ -40,6 +42,10 @@ const initialState = {
 export const usersReducer = createReducer(initialState, builder => {
   builder.addCase(loadedUsers, (state, action) => {
     merge(state.entities, byId(action.payload.response));
+    state.loaded = true;
+  })
+  builder.addCase(userAdded, (state, action) => {
+    state.entities[action.payload.response.username] = action.payload.response
     state.loaded = true;
   })
   builder.addCase(logout, (state, action) => {

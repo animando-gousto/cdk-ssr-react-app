@@ -4,6 +4,7 @@ import { WithBase } from './components/Base'
 import { UserIsLoggedIn } from './components/auth/routeWrappers';
 import Users from './pages/Users'
 import Home from './pages/Home'
+import 'bootstrap/dist/css/bootstrap.css';
 
 const NotFound = () => <>Not Found</>
 

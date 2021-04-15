@@ -71,7 +71,7 @@ const httpActionCreators: HttpActionCreators = configKeys.reduce((acc, c) => {
   }
 }, {} as Record<ConfigNames, ActionCreatorWithPayload<any>>)
 
-export const { getUsers, requestToken } = httpActionCreators
+export const { getUsers, addUser, requestToken } = httpActionCreators
 
 const createSagaFromConfig = (configName: ConfigNames) => {
   const config = apiConfig[configName]

@@ -23,8 +23,7 @@ const useLogin = () => {
   const redirect = urlParse(`${location.pathname}${location.search}`, true).query.redirect
 
   const doRedirect = React.useCallback(() => {
-    console.log('do redirect')
-    redirect && history.push(redirect);
+    redirect ? history.push(redirect) : history.push('/')
   }, [redirect, history])
 
   const onSubmit = React.useCallback((formValues: LoginFormData) => {

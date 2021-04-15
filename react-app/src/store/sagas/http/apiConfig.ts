@@ -1,6 +1,6 @@
 import { GetHttpSagaConfig, PostHttpSagaConfig } from './types'
 import { loginSuccessful } from '../../session/state'
-import { GetUsersSuccessPayload, loadedUsers } from '../../users'
+import { GetUsersSuccessPayload, UserAddedSuccessPayload, loadedUsers, userAdded } from '../../users'
 import { LoginSuccessfulPayload } from '../../session/types'
 
 const getUsers: GetHttpSagaConfig<GetUsersSuccessPayload> = {
@@ -8,6 +8,13 @@ const getUsers: GetHttpSagaConfig<GetUsersSuccessPayload> = {
   method: 'GET',
   action: 'users/GET_USERS',
   successAction: loadedUsers,
+}
+
+const addUser: PostHttpSagaConfig<UserAddedSuccessPayload> = {
+  path: '/users',
+  method: 'POST',
+  action: 'users/ADD_USER',
+  successAction: userAdded,
 }
 
 const requestToken: PostHttpSagaConfig<LoginSuccessfulPayload> = {
@@ -18,6 +25,7 @@ const requestToken: PostHttpSagaConfig<LoginSuccessfulPayload> = {
 }
 
 const configs = {
+  addUser,
   getUsers,
   requestToken,
 }
